@@ -261,7 +261,7 @@ def apns_send_bulk_message(registration_ids, alert, **kwargs):
             identifier += 1
     finally:
         sock.close()
-
+        
     # Mark invalid devices as inactive
     removed = APNSDevice.objects.filter(registration_id__in=invalid_ids)
     removed.update(active=0)
