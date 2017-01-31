@@ -256,7 +256,7 @@ def apns_send_bulk_message(registration_ids, alert, **kwargs):
                     if (e.status == 8):
                         invalid_ids.append(registration_ids[e.identifier])
                     # skip failing identifier
-                    identifier = e.identifier
+                    identifier = e.identifier + 1
                     continue
             identifier += 1
     finally:
