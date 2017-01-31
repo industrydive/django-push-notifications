@@ -14,6 +14,7 @@ from binascii import unhexlify
 from django.core.exceptions import ImproperlyConfigured
 from . import NotificationError
 from .settings import PUSH_NOTIFICATIONS_SETTINGS as SETTINGS
+from .models import APNSDevice
 
 APNS_ERROR_MESSAGES = {
 	1: "Processing error",
