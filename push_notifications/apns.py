@@ -230,6 +230,8 @@ def apns_send_bulk_message(registration_ids, alert, **kwargs):
     it won't be included in the notification. You will need to pass None
     to this for silent notifications.
     """
+    import pdb
+    pdb.set_trace()
     sock = _apns_create_socket_to_push()
     invalid_ids = []
     errors = 0
@@ -254,7 +256,7 @@ def apns_send_bulk_message(registration_ids, alert, **kwargs):
                     if (e.status == 8):
                         invalid_ids.append(registration_ids[e.identifier])
                     # skip failing identifier
-                    identifier = e.identifier + 1
+                    identifier = e.identifier
                     continue
             identifier += 1
     finally:
