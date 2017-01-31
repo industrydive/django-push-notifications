@@ -230,8 +230,6 @@ def apns_send_bulk_message(registration_ids, alert, **kwargs):
     it won't be included in the notification. You will need to pass None
     to this for silent notifications.
     """
-    import pdb
-    pdb.set_trace()
     sock = _apns_create_socket_to_push()
     invalid_ids = []
     errors = 0
