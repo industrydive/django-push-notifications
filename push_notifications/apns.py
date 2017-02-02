@@ -234,6 +234,8 @@ def apns_send_bulk_message(registration_ids, alert, **kwargs):
     invalid_ids = []
     errors = 0
     length = len(registration_ids)
+    last_id = 0
+    odd_error = None
     try:
         identifier = 0
         while identifier < length:
@@ -253,19 +255,36 @@ def apns_send_bulk_message(registration_ids, alert, **kwargs):
                     errors += 1
                     if (e.status == 8):
                         invalid_ids.append(registration_ids[e.identifier])
+                    last_id = e.identifier
                     # skip failing identifier
                     identifier = e.identifier + 1
                     continue
             identifier += 1
+        last_id = identifier
+    except Exception, e:
+        # If some odd connection error happens
+        odd_error = str(e)
+        
+        # Figure out which ID was sent to last
+        try:
+            _apns_check_errors(sock)
+            last_id = identifier
+        except APNSServerError as e:
+            errors += 1
+            if (e.status == 8):
+                invalid_ids.append(registration_ids[e.identifier])
+            last_id = e.identifier
     finally:
         sock.close()
         
-    # Mark invalid devices as inactive
-    removed = APNSDevice.objects.filter(registration_id__in=invalid_ids)
-    removed.update(active=0)
-    
-    return res
-
+        # Mark invalid devices as inactive
+        removed = APNSDevice.objects.filter(registration_id__in=invalid_ids)
+        removed.update(active=0)
+        
+        num_ppl_sent_to = len(registration_ids) - last_id - len(invalid_ids) - 1
+        num_ppl_not_sent_to = len(invalid_ids) + (len(registration_ids) - num_ppl_sent_to - 1)
+        
+        return [num_ppl_sent_to, num_ppl_not_sent_to, len(invalid_ids), odd_error]
 
 def apns_fetch_inactive_ids():
     """
