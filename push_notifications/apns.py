@@ -260,7 +260,7 @@ def apns_send_bulk_message(registration_ids, alert, **kwargs):
                     identifier = e.identifier + 1
                     continue
             identifier += 1
-        last_id = identifier - 1
+        last_id = identifier
     except Exception, e:
         # If some odd connection error happens
         odd_error = str(e)
@@ -273,7 +273,7 @@ def apns_send_bulk_message(registration_ids, alert, **kwargs):
             errors += 1
             if (e.status == 8):
                 invalid_ids.append(registration_ids[e.identifier])
-            last_id = e.identifier - 1
+            last_id = e.identifier
     finally:
         sock.close()
         
