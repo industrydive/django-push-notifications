@@ -236,6 +236,7 @@ def apns_send_bulk_message(registration_ids, alert, **kwargs):
     length = len(registration_ids)
     last_id = 0
     odd_error = None
+    import pdb; pdb.set_trace()
     try:
         identifier = 0
         while identifier < length:
